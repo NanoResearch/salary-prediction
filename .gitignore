@@ -1,0 +1,7 @@
+*~
+.idea/
+*.pyc
+*.ods
+*.csv
+output*
+variables*
