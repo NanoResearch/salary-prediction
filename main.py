@@ -4,7 +4,7 @@ import preprocessing
 
 
 def main():
-	preprocessing.preprocess()
+	preprocessing.preprocess_train()
 
 
 if __name__ == "__main__":

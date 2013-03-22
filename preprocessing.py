@@ -28,7 +28,7 @@ def clean_str_to_list(dirty_str, T):
 	replaced with spaces, then the string is converted to lowercase and split() on whitespace(space, tab, newline etc.)
 	Stopwords are removed from the list obtained.
 	:param dirty_str: The string to be cleaned.
-	:param T: The translate table created by preprocess() for translating punctuation to space.
+	:param T: The translate table created by preprocess_train() for translating punctuation to space.
 	:return: cleaned list with just words(may have digits).
 	"""
 	word_list = ((string.translate(str(unicode(dirty_str, 'ascii', 'ignore')), T)).lower()).split()
@@ -73,7 +73,7 @@ def compute_idf(lines, words_list, i):
 	return idf_dict
 
 
-def preprocess():
+def preprocess_train():
 	"""
 	Main Function: reads data and does pre-processing with help of above functions.
 	"""
@@ -133,3 +133,15 @@ def preprocess():
 	pickle_list = [title_freq_list, desc_freq_list, title_idf_dict, desc_idf_dict]
 	pickle.dump(pickle_list, file)
 	file.close()
+
+	file = open('dict_title', 'w')
+	pickle.dump(title_idf_dict, file)
+	file.close()
+
+	file = open('dict_desc', 'w')
+	pickle.dump(desc_idf_dict, file)
+	file.close()
+
+
+def preprocess_test():
+	pass
