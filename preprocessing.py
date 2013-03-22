@@ -134,11 +134,11 @@ def preprocess_train():
 	pickle.dump(pickle_list, file)
 	file.close()
 
-	file = open('dict_title', 'w')
+	file = open('title_dict', 'w') #title_idf_dict
 	pickle.dump(title_idf_dict, file)
 	file.close()
 
-	file = open('dict_desc', 'w')
+	file = open('desc_dict', 'w') #desc_idf_dict
 	pickle.dump(desc_idf_dict, file)
 	file.close()
 
