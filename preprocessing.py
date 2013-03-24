@@ -95,7 +95,7 @@ def preprocess_train():
 	# These dictionaries are used to find the list of unique categories of each field.
 
 
-	filename = 'b.csv'
+	filename = 'Training.csv'
 
 	with open(filename, 'rb') as csvfile:
 		content = csv.reader(csvfile)
@@ -223,17 +223,18 @@ def preprocess_train():
 		if count % 10001 == 0 or count == 1:
 			inputs = open('inputs_' + str(1 + count / 10000), 'w')
 			targets = open('targets_' + str(1 + count / 10000), 'w')
+			print 'file no. ' + str(1+count/10000)
 			csvwriter_inputs = csv.writer(inputs)
 			csvwriter_targets = csv.writer(targets)
 
-		print 'line ' + str(count)
+#		print 'line ' + str(count)
 		csvwriter_targets.writerow([int(line[-1])])
 		new_line = list()
 
 		cur_line_title_dict = dict([(w, line[1].count(w)) for w in line[1].split()])
 		cur_line_title_freq_list = [cur_line_title_dict.get(w, 0) for w in title_list]
 		max_value = max(cur_line_title_freq_list)
-		print 'max_value for title is ' + str(max_value)
+#		print 'max_value for title is ' + str(max_value)
 		if max_value != 0:
 			cur_line_title_freq_list = [(x / float(max_value)) if x != 0 else 0 for x in cur_line_title_freq_list]
 			assert len(cur_line_title_freq_list) == len(title_idf_list) == 502
@@ -249,7 +250,7 @@ def preprocess_train():
 		cur_line_desc_dict = dict([(w, line[2].count(w)) for w in line[2].split()])
 		cur_line_desc_freq_list = [cur_line_desc_dict.get(w, 0) for w in desc_list]
 		max_value = max(cur_line_desc_freq_list)
-		print 'max_value for desc is ' + str(max_value)
+#		print 'max_value for desc is ' + str(max_value)
 		if max_value != 0:
 			cur_line_desc_freq_list = [x / float(max_value) if x != 0 else 0 for x in cur_line_desc_freq_list]
 			assert len(cur_line_desc_freq_list) == len(desc_idf_list) == 1003
