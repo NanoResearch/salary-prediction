@@ -273,39 +273,36 @@ def num(s):
 		return float(s)
 
 
-def expand_inputs(start_record=1, number_of_records_to_process=10000):
-	input_file = open('lines_file', 'r')
-	content = csv.reader(input_file)
-	lines = []
-	i = start_record
-	for line in content:
-		if i >= start_record + number_of_records_to_process: break
-		if i < start_record: continue
-		new_line = []
-		for x in line:
-			new_line.append(num(x))
-		lines.append(new_line)
-		i += 1
-	input_file.close()
-
+def expand_inputs():
+	count = 4
+	input_file = []
 	range_list = [2325, 3, 3, 316617, 29, 165]
+	lines = []
+	while count < 15:
+		raw_input('Press enter to process file part_%s  '.format(str(count)))
+		with open('part_' + str(count), 'r') as input_file:
+			content = csv.reader(input_file)
+			for line in content:
+				new_line = []
+				for x in line:
+					new_line.append(num(x))
+				lines.append(new_line)
+		with open('inputs_' + str(count), 'w') as inputs:
+			csvwriter = csv.writer(inputs)
+			for line in lines:
+				new_line = line[:34733]
+				for x, y in zip(line[34733:], range_list):
+					tmp_list = [0] * y
+					tmp_list[x] = 1
+					new_line.extend(tmp_list)
+				csvwriter.writerow(new_line)
+		lines = []
+		gc.collect()
+		count += 1
 
-	inputs = open('inputs_' + str(start_record), 'w')
-	csvwriter = csv.writer(inputs)
-	for line in lines:
-		new_line = line[:34733]
-		#		print line[34733:]
-		for x, y in zip(line[34733:], range_list):
-			tmp_list = [0] * y
-			tmp_list[x] = 1
-			new_line.extend(tmp_list)
-		csvwriter.writerow(new_line)
-	inputs.close()
 
-
-def preprocess_train2(file_number=1):
-	start_record = (file_number - 1) * 10000 + 1
-	expand_inputs(start_record)
+def preprocess_train2():
+	expand_inputs()
 
 
 def divide_file_into_parts():

@@ -5,8 +5,8 @@ import sys
 
 def main(arg):
 	# preprocessing.preprocess_train()
-	preprocessing.divide_file_into_parts()
+	preprocessing.expand_inputs()
 
 
 if __name__ == "__main__":
-	main(sys.argv[1])
+	main()
