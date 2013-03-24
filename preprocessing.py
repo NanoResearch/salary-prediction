@@ -222,6 +222,7 @@ def preprocess_train(start):
 	for line in lines:
 		if count <= (start - 1) * 10000:
 			count += 1
+			continue
 		if count % 10001 == 0 or count == (start - 1) * 10000 + 1:
 			inputs = open('inputs_' + str(1 + count / 10000), 'w')
 			targets = open('targets_' + str(1 + count / 10000), 'w')
