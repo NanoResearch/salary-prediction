@@ -292,7 +292,7 @@ def expand_inputs(start_record=1, number_of_records_to_process=10000):
 	inputs = open('inputs_' + str(start_record), 'w')
 	csvwriter = csv.writer(inputs)
 	for line in lines:
-		new_line = []
+		new_line = line[:34733]
 		print line[34733:]
 		for x, y in zip(line[34733:], range_list):
 			tmp_list = [0] * y
