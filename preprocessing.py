@@ -145,8 +145,8 @@ def preprocess_train():
 
 	var_file = open('variables', 'w')
 	pickle_list = [title_freq_list, desc_freq_list, title_idf_dict, desc_idf_dict]
-	pickle.dump(pickle_list, var_file )
-	var_file .close()
+	pickle.dump(pickle_list, var_file)
+	var_file.close()
 
 	title_freq_file = open('title_freq_dict', 'w') #title_idf_dict
 	pickle.dump(title_idf_dict, title_freq_file)
@@ -272,7 +272,7 @@ def num(s):
 		return float(s)
 
 
-def expand_inputs(start_record=1, number_of_records_to_process=10):
+def expand_inputs(start_record=1, number_of_records_to_process=10000):
 	input_file = open('lines_file', 'r')
 	content = csv.reader(input_file)
 	lines = []
@@ -287,17 +287,24 @@ def expand_inputs(start_record=1, number_of_records_to_process=10):
 		i += 1
 	input_file.close()
 
+	range_list = [2325, 3, 3, 316617, 29, 165]
+
 	inputs = open('inputs_' + str(start_record), 'w')
 	csvwriter = csv.writer(inputs)
 	for line in lines:
-		print line
-		csvwriter.writerow(line)
+		new_line = []
+		print line[34733:]
+		for x, y in zip(line[34733:], range_list):
+			tmp_list = [0] * y
+			tmp_list[x] = 1
+			new_line.extend(tmp_list)
+		csvwriter.writerow(new_line)
 	inputs.close()
 
 
 def preprocess_train2():
 	file_number = 1
-	start_record = (file_number - 1) * 10 + 1
+	start_record = (file_number - 1) * 10000 + 1
 	expand_inputs(start_record)
 	pass
 
