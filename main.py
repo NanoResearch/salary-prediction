@@ -3,9 +3,9 @@ __author__ = 'saimanoj'
 import preprocessing
 import sys
 
-def main(arg):
+def main():
 	# preprocessing.preprocess_train()
-	preprocessing.expand_inputs()
+	preprocessing.preprocess_train2()
 
 
 if __name__ == "__main__":
