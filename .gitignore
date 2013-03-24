@@ -6,3 +6,5 @@
 net.mat
 output*
 variables*
+inputs_*
+targets_*
