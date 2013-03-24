@@ -275,11 +275,10 @@ def num(s):
 
 def expand_inputs():
 	count = 4
-	input_file = []
 	range_list = [2325, 3, 3, 316617, 29, 165]
 	lines = []
 	while count < 15:
-		raw_input('Press enter to process file part_%s  '.format(str(count)))
+		raw_input('Press enter to process file part_' + str(count) + '  ')
 		with open('part_' + str(count), 'r') as input_file:
 			content = csv.reader(input_file)
 			for line in content:
