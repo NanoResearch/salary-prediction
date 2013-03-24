@@ -223,7 +223,7 @@ def preprocess_train(start):
 		if count <= (start - 1) * 10000:
 			count += 1
 			continue
-		if count % 10001 == 0 or count == (start - 1) * 10000 + 1:
+		if count % 10000 == 1 or count == (start - 1) * 10000 + 1:
 			inputs = open('inputs_' + str(1 + count / 10000), 'w')
 			targets = open('targets_' + str(1 + count / 10000), 'w')
 			print 'file no. ' + str(1 + count / 10000)
