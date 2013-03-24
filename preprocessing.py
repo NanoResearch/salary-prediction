@@ -86,17 +86,16 @@ def preprocess_train():
 	# These dictionaries are used to calculate the frequency of words.
 
 
-	location_dict = {}
+	# location_dict = {}
 	time_dict = {}
 	term_dict = {}
-	company_dict = {}
+	# company_dict = {}
 	category_dict = {}
 	source_dict = {}
 	# These dictionaries are used to find the list of unique categories of each field.
 
-	target_for_training_file = open('targets', 'w')
 
-	filename = 'a.csv'
+	filename = 'b.csv'
 
 	with open(filename, 'rb') as csvfile:
 		content = csv.reader(csvfile)
@@ -116,52 +115,52 @@ def preprocess_train():
 		lines[i][1] = ' '.join(title_cur_list)
 		lines[i][2] = ' '.join(desc_cur_list)
 		i += 1
-		for w in title_cur_list:
-			title_freq_dict[w] = title_freq_dict.get(w, 0) + 1
-		for w in desc_cur_list:
-			desc_freq_dict[w] = desc_freq_dict.get(w, 0) + 1
+	# for w in title_cur_list:
+	# 	title_freq_dict[w] = title_freq_dict.get(w, 0) + 1
+	# for w in desc_cur_list:
+	# 	desc_freq_dict[w] = desc_freq_dict.get(w, 0) + 1
 
-	remove_low_freq_words(title_freq_dict)
-	remove_low_freq_words(desc_freq_dict)
+	# remove_low_freq_words(title_freq_dict)
+	# remove_low_freq_words(desc_freq_dict)
 	# Low frequency words removed
 
-	title_freq_list = [(v, k) for k, v in title_freq_dict.iteritems()]
-	desc_freq_list = [(v, k) for k, v in desc_freq_dict.iteritems()]
-	title_freq_list.sort(reverse=True)
-	desc_freq_list.sort(reverse=True)
-	#Sorted by non-increasing frequency of words
-
-	print "Lists..."
-	print 'title list ', title_freq_list
-	print 'desc list ', desc_freq_list
-
-	print 'len of title dict ' + str(len(title_freq_dict))
-	print 'len of desc dict ' + str(len(desc_freq_dict))
-
-	title_idf_dict = compute_idf(lines, title_freq_dict.keys(), 1)
-	desc_idf_dict = compute_idf(lines, desc_freq_dict.keys(), 2)
-
-	print 'title idf dict' + str(title_idf_dict)
-	print 'desc idf dict' + str(desc_idf_dict)
-
-	var_file = open('variables', 'w')
-	pickle_list = [title_freq_list, desc_freq_list, title_idf_dict, desc_idf_dict]
-	pickle.dump(pickle_list, var_file)
-	var_file.close()
-
-	title_freq_file = open('title_freq_dict', 'w') #title_idf_dict
-	pickle.dump(title_idf_dict, title_freq_file)
-	title_freq_file.close()
-
-	desc_freq_file = open('desc_freq_dict', 'w') #desc_idf_dict
-	pickle.dump(desc_idf_dict, desc_freq_file)
-	desc_freq_file.close()
+	# title_freq_list = [(v, k) for k, v in title_freq_dict.iteritems()]
+	# desc_freq_list = [(v, k) for k, v in desc_freq_dict.iteritems()]
+	# title_freq_list.sort(reverse=True)
+	# desc_freq_list.sort(reverse=True)
+	# #Sorted by non-increasing frequency of words
+	#
+	# print "Lists..."
+	# print 'title list ', title_freq_list
+	# print 'desc list ', desc_freq_list
+	#
+	# print 'len of title dict ' + str(len(title_freq_dict))
+	# print 'len of desc dict ' + str(len(desc_freq_dict))
+	#
+	# title_idf_dict = compute_idf(lines, title_freq_dict.keys(), 1)
+	# desc_idf_dict = compute_idf(lines, desc_freq_dict.keys(), 2)
+	#
+	# print 'title idf dict' + str(title_idf_dict)
+	# print 'desc idf dict' + str(desc_idf_dict)
+	#
+	# var_file = open('variables', 'w')
+	# pickle_list = [title_freq_list, desc_freq_list, title_idf_dict, desc_idf_dict]
+	# pickle.dump(pickle_list, var_file)
+	# var_file.close()
+	#
+	# title_freq_file = open('title_freq_dict', 'w') #title_idf_dict
+	# pickle.dump(title_idf_dict, title_freq_file)
+	# title_freq_file.close()
+	#
+	# desc_freq_file = open('desc_freq_dict', 'w') #desc_idf_dict
+	# pickle.dump(desc_idf_dict, desc_freq_file)
+	# desc_freq_file.close()
 
 	for line in lines:
-		location_dict[line[3]] = 1
+		# location_dict[line[3]] = 1
 		time_dict[line[4]] = 1
 		term_dict[line[5]] = 1
-		company_dict[line[6]] = 1
+		# company_dict[line[6]] = 1
 		category_dict[line[7]] = 1
 		source_dict[line[8]] = 1
 
@@ -177,32 +176,34 @@ def preprocess_train():
 		desc_list = desc_idf_dict.keys()
 		desc_list.sort()
 
-	location_list = location_dict.keys()
+	# location_list = location_dict.keys()
 	time_list = time_dict.keys()
 	term_list = term_dict.keys()
-	company_list = company_dict.keys()
+	# company_list = company_dict.keys()
 	category_list = category_dict.keys()
 	source_list = source_dict.keys()
 
-	location_list.sort()
+	# location_list.sort()
 	time_list.sort()
 	term_list.sort()
-	company_list.sort()
+	# company_list.sort()
 	category_list.sort()
 	source_list.sort()
 
+	location_list = []
+	company_list = []
 	lists_file = open('all_lists', 'w')
 	all_list = [title_list, desc_list, location_list, time_list, term_list, company_list, category_list, source_list]
+	sum_len = 0
+	for i in range(len(all_list)):
+		length = len(all_list[i])
+		sum_len += length
+		print 'length of sublist ' + str(length)
+	print 'sum of all lengths  ' + str(sum_len)
+
 	# All these lists have the list of words or categories of that attribute in sorted order.
 	pickle.dump(all_list, lists_file)
 	lists_file.close()
-
-	line_len = len(lines[0])
-	count = 1
-	lines_file = open('lines_file_', 'w')
-	csvwriter = csv.writer(lines_file)
-
-	csvwriter_targets = csv.writer(target_for_training_file)
 
 	title_idf_list = title_idf_dict.items()
 	title_idf_list.sort()
@@ -216,7 +217,15 @@ def preprocess_train():
 	desc_idf_list = [x[1] for x in desc_idf_list]
 	# Take the idf values
 
+	line_len = len(lines[0])
+	count = 1
 	for line in lines:
+		if count % 10001 == 0 or count == 1:
+			inputs = open('inputs_' + str(1 + count / 10000), 'w')
+			targets = open('targets_' + str(1 + count / 10000), 'w')
+			csvwriter_inputs = csv.writer(inputs)
+			csvwriter_targets = csv.writer(targets)
+
 		print 'line ' + str(count)
 		csvwriter_targets.writerow([int(line[-1])])
 		new_line = list()
@@ -227,7 +236,7 @@ def preprocess_train():
 		print 'max_value for title is ' + str(max_value)
 		if max_value != 0:
 			cur_line_title_freq_list = [(x / float(max_value)) if x != 0 else 0 for x in cur_line_title_freq_list]
-			assert len(cur_line_title_freq_list) == len(title_idf_list) == 3485
+			assert len(cur_line_title_freq_list) == len(title_idf_list) == 502
 			title_tf_idf_list = [cur_line_title_freq_list[i] * title_idf_list[i] if cur_line_title_freq_list[i] != 0
 			                     else 0 for i in range(len(title_idf_list))]
 		# Both cur_line_title_freq_list and title_idf_list are of same length,
@@ -243,7 +252,7 @@ def preprocess_train():
 		print 'max_value for desc is ' + str(max_value)
 		if max_value != 0:
 			cur_line_desc_freq_list = [x / float(max_value) if x != 0 else 0 for x in cur_line_desc_freq_list]
-			assert len(cur_line_desc_freq_list) == len(desc_idf_list) == 31248
+			assert len(cur_line_desc_freq_list) == len(desc_idf_list) == 1003
 			desc_tf_idf_list = [cur_line_desc_freq_list[i] * desc_idf_list[i] if cur_line_desc_freq_list[i] != 0
 			                    else 0 for i in range(len(desc_idf_list))]
 		# Both cur_line_desc_freq_list and desc_idf_list are of same length,
@@ -253,17 +262,23 @@ def preprocess_train():
 
 		new_line.extend(desc_tf_idf_list)
 
-		i = 3
+		i = 4
 		while i < line_len - 1:
-			presence_list = [w == line[i] for w in all_list[i - 1]]
-			new_line.append(presence_list.index(True) if True in presence_list else -1)
+			if i == 6:
+				i += 1
+				continue
+			presence_list = [int(w == line[i]) for w in all_list[i - 1]]
+			new_line.extend(presence_list)
+			# new_line.append(presence_list.index(True) if True in presence_list else -1)
 			i += 1
-		csvwriter.writerow(new_line)
+		csvwriter_inputs.writerow(new_line)
 		count += 1
-	# lines_file.close()
+		gc.collect()
 
-	# return all_list
-	target_for_training_file.close()
+	if inputs: inputs.close()
+	if targets: targets.close()
+
+# return all_list
 
 
 def num(s):
