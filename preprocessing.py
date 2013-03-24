@@ -349,4 +349,151 @@ def divide_file_into_parts():
 
 
 def preprocess_test():
-	pass
+	test = 'b.csv'
+	lines = []
+
+	title_freq_dict = {}
+	desc_freq_dict = {}
+	time_dict = {}
+	term_dict = {}
+	category_dict = {}
+	source_dict = {}
+	# These dictionaries are used to find the list of unique categories of each field.
+
+	with open(test, 'rb') as test_csvfile:
+		content = csv.reader(test_csvfile)
+		for line in content:
+			lines.append(line)
+
+	T = string.maketrans(string.punctuation, ' ' * (len(string.punctuation)))
+
+	del lines[0]
+
+	M = len(lines)
+
+	i = 0
+	for line in lines:
+		title_cur_list = clean_str_to_list(line[1], T)
+		desc_cur_list = clean_str_to_list(line[2], T)
+		lines[i][1] = ' '.join(title_cur_list)
+		lines[i][2] = ' '.join(desc_cur_list)
+		i += 1
+	gc.collect()
+
+	for line in lines:
+		time_dict[line[4]] = 1
+		term_dict[line[5]] = 1
+		category_dict[line[7]] = 1
+		source_dict[line[8]] = 1
+
+	title_idf_dict = {}
+	with open('title_idf_dict', 'r') as title_idf_file:
+		title_idf_dict = pickle.load(title_idf_file)
+		title_list = title_idf_dict.keys()
+		title_list.sort()
+
+	desc_idf_dict = {}
+	with open('desc_idf_dict', 'r') as desc_idf_file:
+		desc_idf_dict = pickle.load(desc_idf_file)
+		desc_list = desc_idf_dict.keys()
+		desc_list.sort()
+
+	time_list = time_dict.keys()
+	term_list = term_dict.keys()
+	category_list = category_dict.keys()
+	source_list = source_dict.keys()
+
+	time_list.sort()
+	term_list.sort()
+	category_list.sort()
+	source_list.sort()
+
+	location_list = []
+	company_list = []
+	lists_file = open('all_lists', 'r')
+	all_list = pickle.load(lists_file)
+	# All these lists have the list of words or categories of that attribute in sorted order.
+	# [title_list, desc_list, location_list, time_list, term_list, company_list, category_list, source_list] = all_list
+	sum_len = 0
+	for i in range(len(all_list)):
+		length = len(all_list[i])
+		sum_len += length
+		print 'length of sublist ' + str(length)
+	print 'sum of all lengths  ' + str(sum_len)
+	lists_file.close()
+
+	title_idf_list = title_idf_dict.items()
+	title_idf_list.sort()
+	# Sort based on the words
+	title_idf_list = [x[1] for x in title_idf_list]
+	# Take the idf values
+
+	desc_idf_list = desc_idf_dict.items()
+	desc_idf_list.sort()
+	# Sort based on the words
+	desc_idf_list = [x[1] for x in desc_idf_list]
+	# Take the idf values
+
+	gc.collect()
+	line_len = len(lines[0])
+	count = 1
+	for line in lines:
+		if count % 10000 == 1 or count == 1:
+			inputs = open('test_inputs_' + str(1 + count / 10000), 'w')
+			targets = open('test_targets_' + str(1 + count / 10000), 'w')
+			print 'file no. ' + str(1 + count / 10000)
+			csvwriter_inputs = csv.writer(inputs)
+			csvwriter_targets = csv.writer(targets)
+
+		#		print 'line ' + str(count)
+		csvwriter_targets.writerow([int(line[-1])])
+		new_line = list()
+
+		cur_line_title_dict = dict([(w, line[1].count(w)) for w in line[1].split()])
+		cur_line_title_freq_list = [cur_line_title_dict.get(w, 0) for w in title_list]
+		max_value = max(cur_line_title_freq_list)
+		#		print 'max_value for title is ' + str(max_value)
+		if max_value != 0:
+			cur_line_title_freq_list = [(x / float(max_value)) if x != 0 else 0 for x in cur_line_title_freq_list]
+			assert len(cur_line_title_freq_list) == len(title_idf_list) == 502
+			title_tf_idf_list = [cur_line_title_freq_list[i] * title_idf_list[i] if cur_line_title_freq_list[i] != 0
+			                     else 0 for i in range(len(title_idf_list))]
+		# Both cur_line_title_freq_list and title_idf_list are of same length,
+		# they are essentially tf and idf vectors
+		else:
+			title_tf_idf_list = cur_line_title_freq_list
+
+		new_line.extend(title_tf_idf_list)
+
+		cur_line_desc_dict = dict([(w, line[2].count(w)) for w in line[2].split()])
+		cur_line_desc_freq_list = [cur_line_desc_dict.get(w, 0) for w in desc_list]
+		max_value = max(cur_line_desc_freq_list)
+		#		print 'max_value for desc is ' + str(max_value)
+		if max_value != 0:
+			cur_line_desc_freq_list = [x / float(max_value) if x != 0 else 0 for x in cur_line_desc_freq_list]
+			assert len(cur_line_desc_freq_list) == len(desc_idf_list) == 1003
+			desc_tf_idf_list = [cur_line_desc_freq_list[i] * desc_idf_list[i] if cur_line_desc_freq_list[i] != 0
+			                    else 0 for i in range(len(desc_idf_list))]
+		# Both cur_line_desc_freq_list and desc_idf_list are of same length,
+		# they are essentially tf and idf vectors
+		else:
+			desc_tf_idf_list = cur_line_desc_freq_list
+
+		new_line.extend(desc_tf_idf_list)
+
+		i = 4
+		# print all_list[7]
+		while i < line_len - 1:
+			if i == 6:
+				i += 1
+				continue
+			presence_list = [int(w == line[i]) for w in all_list[i - 1]]
+			new_line.extend(presence_list)
+			# new_line.append(presence_list.index(True) if True in presence_list else -1)
+			i += 1
+		csvwriter_inputs.writerow(new_line)
+		count += 1
+		gc.collect()
+
+	if inputs: inputs.close()
+	if targets: targets.close()
