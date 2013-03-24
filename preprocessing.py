@@ -302,11 +302,9 @@ def expand_inputs(start_record=1, number_of_records_to_process=10000):
 	inputs.close()
 
 
-def preprocess_train2():
-	file_number = 1
+def preprocess_train2(file_number=1):
 	start_record = (file_number - 1) * 10000 + 1
 	expand_inputs(start_record)
-	pass
 
 
 def preprocess_test():
