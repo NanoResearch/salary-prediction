@@ -5,7 +5,7 @@ import sys
 
 def main(arg):
 	# preprocessing.preprocess_train()
-	preprocessing.preprocess_train2(int(arg))
+	preprocessing.divide_file_into_parts()
 
 
 if __name__ == "__main__":

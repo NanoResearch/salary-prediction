@@ -1,6 +1,7 @@
 import math
 import pickle
 import exceptions
+import gc
 
 __author__ = 'saimanoj'
 
@@ -293,7 +294,7 @@ def expand_inputs(start_record=1, number_of_records_to_process=10000):
 	csvwriter = csv.writer(inputs)
 	for line in lines:
 		new_line = line[:34733]
-#		print line[34733:]
+		#		print line[34733:]
 		for x, y in zip(line[34733:], range_list):
 			tmp_list = [0] * y
 			tmp_list[x] = 1
@@ -305,6 +306,31 @@ def expand_inputs(start_record=1, number_of_records_to_process=10000):
 def preprocess_train2(file_number=1):
 	start_record = (file_number - 1) * 10000 + 1
 	expand_inputs(start_record)
+
+
+def divide_file_into_parts():
+	input_file = open('lines_file', 'r')
+	content = csv.reader(input_file)
+	i = 1
+	part_file = open('part_1', 'w')
+	csvwriter = csv.writer(part_file)
+
+	j = 2
+
+	for line in content:
+		if i > 10000:
+			part_file.close()
+			part_file = open('part_' + str(j), 'w')
+			j += 1
+			csvwriter = csv.writer(part_file)
+			i = 1
+			gc.collect()
+		new_line = []
+		for x in line:
+			new_line.append(num(x))
+		i += 1
+		csvwriter.writerow(new_line)
+	input_file.close()
 
 
 def preprocess_test():
